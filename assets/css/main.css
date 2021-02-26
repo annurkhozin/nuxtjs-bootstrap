@@ -1,0 +1,140 @@
+html .dark-mode {
+  min-height: 100vh;
+  background-color: #2f495e;
+}
+html .light-mode {
+  min-height: 100vh;
+  background-color: #fff;
+}
+.dark-mode .icon,
+.dark-mode .breadcrumb-item,
+.dark-mode a,
+.dark-mode p,
+.dark-mode .str,
+.dark-mode .str:hover,
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+  color: #fff;
+}
+.dark-mode input:-webkit-autofill,
+.dark-mode input:-webkit-autofill:hover,
+.dark-mode input:-webkit-autofill:focus input:-webkit-autofill,
+.dark-mode textarea:-webkit-autofill,
+.dark-mode textarea:-webkit-autofill:hover textarea:-webkit-autofill:focus,
+.dark-mode select:-webkit-autofill,
+.dark-mode select:-webkit-autofill:hover,
+.dark-mode select:-webkit-autofill:focus {
+  -webkit-text-fill-color: white !important;
+  -webkit-box-shadow: 0 0 0 1000px #4e6272 inset !important;
+}
+
+.dark-mode input::placeholder {
+  color: rgb(230, 227, 227);
+}
+.light-mode .icon,
+.light-mode .breadcrumb-item,
+.light-mode a,
+.light-mode p,
+.light-mode h1,
+.light-mode h2,
+.light-mode h3,
+.light-mode h4,
+.light-mode h5,
+.light-mode h6 {
+  color: #6c747d;
+}
+.dark-mode .vc-container,
+.dark-mode .vc-btn {
+  background-color: #2f495e;
+}
+.dark-mode .vc-btn:hover {
+  background-color: #2c4152;
+}
+.dark-mode input,
+.dark-mode input:focus {
+  background-color: transparent;
+  color: #fff;
+}
+.input-group-text {
+  background-color: transparent;
+  color: black;
+}
+a:hover {
+  color: #00c58e;
+}
+
+/* 
+  ##Device = Desktops
+  ##Screen = 1281px to higher resolution desktops
+*/
+@media (min-width: 1281px) {
+  /* CSS */
+  body {
+    font-size: 0.9rem;
+  }
+}
+
+/* 
+    ##Device = Laptops, Desktops
+    ##Screen = B/w 1025px to 1280px
+  */
+@media (min-width: 1025px) and (max-width: 1280px) {
+  /* CSS */
+  body {
+    font-size: 0.9rem;
+  }
+}
+
+/* 
+    ##Device = Tablets, Ipads (portrait)
+    ##Screen = B/w 768px to 1024px
+  */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* CSS */
+  body {
+    font-size: 0.88rem;
+  }
+}
+
+/* 
+    ##Device = Tablets, Ipads (landscape)
+    ##Screen = B/w 768px to 1024px
+  */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  /* CSS */
+  body {
+    font-size: 0.86em;
+  }
+}
+
+/* 
+    ##Device = Low Resolution Tablets, Mobiles (Landscape)
+    ##Screen = B/w 481px to 767px
+  */
+@media (min-width: 481px) and (max-width: 767px) {
+  /* CSS */
+  body {
+    font-size: 0.82em;
+  }
+}
+
+/* 
+    ##Device = Most of the Smartphones Mobiles (Portrait)
+    ##Screen = B/w 320px to 479px
+  */
+@media (max-width: 480px) {
+  /* CSS */
+  body {
+    font-size: 0.8em;
+  }
+}
+p.line {
+  text-align: right;
+  font-size: 11px;
+  border-top: 1px solid #d0d0d0;
+  margin: 10px 0 0 0;
+}
