@@ -7,8 +7,8 @@
       dismissible
       fade
       @dismissed="showDismissibleAlert = false"
-      >Halo {{ nama_user_login }}. Selamat datang kembali</b-alert
-    >
+      >{{ $t('Hello') }} {{ nama_user_login }} 👋. {{ $t('Welcome_back') }}.
+    </b-alert>
   </div>
 </template>
 
@@ -26,14 +26,14 @@ export default {
       nama_user_login: this.$auth.$state.user.nama,
       breadcrumb: [
         {
-          text: 'Beranda',
+          text: this.$t('Home'),
           active: true,
         },
       ],
     }
   },
   head: {
-    title: 'Beranda',
+    title: 'Home',
     meta: [
       {
         hid: 'home',
@@ -43,6 +43,7 @@ export default {
     ],
   },
   created() {
+    console.log(this)
     this.sidebarMenu(false)
   },
   methods: {

@@ -1,7 +1,8 @@
 <template>
   <aside class="mobile" :class="this.$store.state.showSidebar ? 'open' : ''">
-    <div class="d-flex justify-content-end">
-      <DarkLightMode />
+    <div class="d-flex bd-highlight">
+      <div class="p-2 bd-highlight"><DarkLightMode /></div>
+      <div class="ml-auto p-2 bd-highlight"><DarkLightMode /></div>
     </div>
     <div class="side-menu-header d-flex align-items-center pl-3 pb-2">
       <span

@@ -33,7 +33,36 @@
 
           <b-navbar-nav class="ml-auto">
             <b-nav-item> </b-nav-item>
+            <b-nav-item-dropdown
+              v-if="this.$auth.$state.loggedIn"
+              right
+              no-caret
+            >
+              <template #button-content>
+                <img
+                  height="20px"
+                  src="https://twemoji.maxcdn.com/2/72x72/1f1ee-1f1e9.png"
+                  alt="Indonesia"
+                />
+              </template>
 
+              <b-dropdown-item :to="switchLocalePath('id')"
+                ><img
+                  height="20px"
+                  src="https://twemoji.maxcdn.com/2/72x72/1f1ee-1f1e9.png"
+                  alt="Indonesia"
+                />
+                Indonesia</b-dropdown-item
+              >
+              <b-dropdown-item :to="switchLocalePath('en')"
+                ><img
+                  height="20px"
+                  src="https://twemoji.maxcdn.com/2/72x72/1f1ec-1f1e7.png"
+                  alt="English"
+                />
+                English</b-dropdown-item
+              >
+            </b-nav-item-dropdown>
             <b-nav-item-dropdown
               v-if="this.$auth.$state.loggedIn"
               right
