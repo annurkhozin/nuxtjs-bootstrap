@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div class="d-flex justify-content-end">
+      <DarkLightMode />
+    </div>
     <div class="container-login100">
       <div class="wrap-login100">
         <b-col class="col-7 d-none d-md-block d-md-block">
@@ -18,7 +21,9 @@
           </div>
         </b-col>
         <b-col class="col-12 col-sm-8 col-md-5 offset-sm-2 offset-md-0">
-          <div class="box-login justify-content-center align-items-center">
+          <div
+            class="box-login shadow justify-content-center align-items-center"
+          >
             <b-form method="post" @submit.prevent="sendAuth">
               <div class="text-center m-4">
                 <Logo class="logo mb-2" />
@@ -27,6 +32,12 @@
                   silahkan masuk terlebih dahulu
                 </p>
               </div>
+              <b-alert
+                :show="error === '' ? false : true"
+                variant="danger"
+                fade
+                >{{ error }}</b-alert
+              >
               <b-input-group class="mb-4" size="sm">
                 <b-input-group-append is-text>
                   <b-icon-person class="icon"></b-icon-person>
@@ -87,9 +98,7 @@
                   class="d-inline-block"
                 >
                   <b-button
-                    ref="button"
                     pill
-                    size="sm"
                     :disabled="busy"
                     variant="success"
                     type="submit"
@@ -111,6 +120,7 @@
 import Clock from 'vue-clock2'
 import Logo from '~/components/Logo'
 import LoginVector from '~/components/LoginVector'
+import DarkLightMode from '~/components/DarkLightMode'
 export default {
   name: 'Login',
   auth: false,
@@ -118,6 +128,7 @@ export default {
     Logo,
     LoginVector,
     Clock,
+    DarkLightMode,
   },
   data() {
     return {
@@ -126,6 +137,7 @@ export default {
       auth: {},
       time: '',
       busy: false,
+      error: '',
     }
   },
   head: {
@@ -146,6 +158,10 @@ export default {
     }
   },
   methods: {
+    setBgMode() {
+      localStorage.setItem('darkMode', !this.$store.state.darkMode)
+      this.$store.state.darkMode = !this.$store.state.darkMode
+    },
     btnPassword() {
       if (this.showPassword === true) {
         this.showPassword = false
@@ -160,8 +176,10 @@ export default {
       this.busy = true
       if (!this.auth.username) {
         this.$refs.username.$el.focus()
+        this.error = 'Username / email wajid diisi'
       } else if (!this.auth.password) {
         this.$refs.password.$el.focus()
+        this.error = 'Password wajid diisi'
       } else {
         try {
           //MELAKUKAN PROSES LOGIN, DENGAN MENGGUNAKAN STRATEGIES LOCAL YANG ADA DI NUXT CONFIG
@@ -171,10 +189,11 @@ export default {
               data: this.auth,
             })
             .then(() => {
+              this.busy = false
               this.$router.push('/')
-              //this.$toast.success('Berhasil masuk')
             })
         } catch (e) {
+          this.busy = false
           this.error = e.response.data.message
         }
       }
@@ -184,6 +203,19 @@ export default {
 </script>
 
 <style scoped>
+.btn-dark-mode {
+  position: absolute;
+  border: 1px solid #e3e3e3;
+  border-radius: 15px;
+  cursor: pointer;
+  z-index: 99;
+}
+.dark-mode .btn-dark-mode {
+  background-color: #1c3c56;
+}
+.light-mode .btn-dark-mode {
+  background-color: aliceblue;
+}
 .clock {
   height: 20%;
   width: 20%;
@@ -211,7 +243,6 @@ export default {
   min-height: 100%;
   padding: 15px;
   background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   border-radius: 10px;
@@ -263,5 +294,10 @@ export default {
 }
 .link-menu {
   padding: 5px;
+}
+@media (max-width: 480px) {
+  .container-login100 {
+    padding: 0;
+  }
 }
 </style>

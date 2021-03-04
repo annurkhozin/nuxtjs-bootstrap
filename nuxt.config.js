@@ -1,6 +1,7 @@
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
+  standalone: false,
 
   // Target (https://go.nuxtjs.dev/config-target)
   target: 'static',
@@ -22,6 +23,11 @@ export default {
   loading: {
     color: '#4eb883',
   },
+  loadingIndicator: {
+    name: 'circle',
+    color: '#4eb883',
+    background: 'white',
+  },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -29,7 +35,12 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      { name: 'theme-color', content: '#317EFB' },
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'Product by Kalinesia Technology',
+      },
       { hid: 'author', name: 'author', content: 'Nur Khozin' },
       { hid: 'author', name: 'author', content: 'annurkhozin@gmail.com' },
     ],
@@ -66,20 +77,22 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/auth-next',
   ],
-
   bootstrapVue: {
     icons: true,
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // baseURL: 'http://127.0.0.1:3000', // Used as fallback if no runtime config is provided
+    // baseURL: 'http://192.168.43.193:3000/', // Used as fallback if no runtime config is provided
     proxy: true, // Can be also an object with default options
+    credentials: false,
   },
   proxy: {
     '/api/': {
-      target: 'http://127.0.0.1:3000',
-      pathRewrite: { '^/api/': '/v1/' },
+      target: 'http://192.168.43.193:3000',
+      pathRewrite: { '^/api': '' },
+      changeOrigin: false,
+      prependPath: false,
     },
   },
 
@@ -116,8 +129,15 @@ export default {
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
+    meta: {
+      title: 'Starter Project',
+      author: 'annurkhozin@gmail.com',
+    },
     manifest: {
+      name: 'My starter project',
+      short_name: 'My Apps',
       lang: 'en',
+      theme_color: '#317EFB',
     },
   },
 
