@@ -8,17 +8,6 @@
         <b-navbar-brand to="/" class="d-none d-md-block d-md-block"
           ><span class="str">App Name</span></b-navbar-brand
         >
-        <b-navbar-nav class="d-block d-md-none d-lg-none d-xl-none">
-          <b-nav-item
-            v-if="this.$route.name != 'index'"
-            style="font-size: 1em"
-            @click="actionBack"
-            ><b-icon-chevron-double-left
-              class="icon"
-            ></b-icon-chevron-double-left>
-            <span class="str">Kembali</span>
-          </b-nav-item>
-        </b-navbar-nav>
         <b-collapse
           id="nav-collapse"
           is-nav
@@ -32,42 +21,12 @@
           </b-navbar-nav>
 
           <b-navbar-nav class="ml-auto">
-            <b-nav-item> </b-nav-item>
-            <b-nav-item-dropdown
-              v-if="this.$auth.$state.loggedIn"
-              right
-              no-caret
-            >
-              <template #button-content>
-                <img
-                  height="20px"
-                  src="https://twemoji.maxcdn.com/2/72x72/1f1ee-1f1e9.png"
-                  alt="Indonesia"
-                />
-              </template>
-
-              <b-dropdown-item :to="switchLocalePath('id')"
-                ><img
-                  height="20px"
-                  src="https://twemoji.maxcdn.com/2/72x72/1f1ee-1f1e9.png"
-                  alt="Indonesia"
-                />
-                Indonesia</b-dropdown-item
-              >
-              <b-dropdown-item :to="switchLocalePath('en')"
-                ><img
-                  height="20px"
-                  src="https://twemoji.maxcdn.com/2/72x72/1f1ec-1f1e7.png"
-                  alt="English"
-                />
-                English</b-dropdown-item
-              >
-            </b-nav-item-dropdown>
             <b-nav-item-dropdown
               v-if="this.$auth.$state.loggedIn"
               right
               no-caret
               class="flex"
+              variant="link"
             >
               <template #button-content>
                 <b-icon-bell class="icon"></b-icon-bell>
@@ -114,16 +73,16 @@
 
               <b-dropdown-item to="profile"
                 ><b-icon-person scale="0.8"></b-icon-person>
-                Profil</b-dropdown-item
+                {{ $t('Profile') }}</b-dropdown-item
               >
               <b-dropdown-item to="setting"
                 ><b-icon-gear scale="0.8"></b-icon-gear>
-                Pengaturan</b-dropdown-item
+                {{ $t('Setting') }}</b-dropdown-item
               >
               <b-dropdown-divider></b-dropdown-divider>
               <b-dropdown-item @click="logout"
                 ><b-icon-power scale="0.8"></b-icon-power>
-                Keluar</b-dropdown-item
+                {{ $t('Logout') }}</b-dropdown-item
               >
             </b-nav-item-dropdown>
           </b-navbar-nav>
@@ -135,7 +94,7 @@
       class="fixed-bottom shadow py-1 py-md-1 d-block d-md-none d-lg-none d-xl-none navbar-bottom"
     >
       <b-navbar-nav class="nav-justified">
-        <b-nav-item to="/">
+        <b-nav-item :to="currentLang + 'home'">
           <b-icon-house class="white"></b-icon-house>
         </b-nav-item>
         <b-nav-item
@@ -147,6 +106,7 @@
           right
           dropup
           no-caret
+          variant="link"
         >
           <template #button-content>
             <b-icon-three-dots-vertical
@@ -154,14 +114,18 @@
             ></b-icon-three-dots-vertical>
           </template>
 
-          <b-dropdown-item to="profile"
-            ><b-icon-person scale="0.8"></b-icon-person> Profil</b-dropdown-item
+          <b-dropdown-item :to="currentLang + 'profile'"
+            ><b-icon-person scale="0.8"></b-icon-person>
+            {{ $t('Profile') }}</b-dropdown-item
           >
-          <b-dropdown-item to="setting"
-            ><b-icon-gear scale="0.8"></b-icon-gear> Pengaturan</b-dropdown-item
+          <b-dropdown-item :to="currentLang + 'setting'"
+            ><b-icon-gear scale="0.8"></b-icon-gear>
+            {{ $t('Setting') }}</b-dropdown-item
           >
+          <b-dropdown-divider></b-dropdown-divider>
           <b-dropdown-item @click="logout"
-            ><b-icon-power scale="0.8"></b-icon-power> Keluar</b-dropdown-item
+            ><b-icon-power scale="0.8"></b-icon-power>
+            {{ $t('Logout') }}</b-dropdown-item
           >
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -175,9 +139,12 @@ const OFFSET = 5
 
 export default {
   name: 'Navbar',
-  components: {},
   data() {
     return {
+      currentLang:
+        this.$i18n.defaultLocale === this.$i18n.locale
+          ? '/'
+          : '/' + this.$i18n.locale + '/',
       showNavbar: true,
       lastScrollPosition: 0,
       scrollValue: 0,
@@ -204,23 +171,20 @@ export default {
     ...mapMutations(['SET_SIDEBAR']),
     async logout() {
       await this.$confirm({
-        title: 'Konfirmasi',
-        message: `Yakin ingin keluar dari akun?`,
+        title: this.$t('Confirmation'),
+        message: this.$t('LogoutMessage'),
         button: {
-          no: 'Tidak',
-          yes: 'Ya',
+          no: this.$t('No'),
+          yes: this.$t('Yes'),
         },
         callback: (confirm) => {
           if (confirm) {
             this.$auth.logout().then(() => {
-              this.$router.push('/login')
+              this.$router.push(this.currentLang + 'login')
             })
           }
         },
       })
-    },
-    actionBack() {
-      this.$router.go(-1)
     },
     sidebarMenu() {
       this.SET_SIDEBAR(!this.$store.state.showSidebar)
@@ -247,7 +211,8 @@ export default {
   background-color: #375268;
 }
 .light-mode .navbar {
-  background-color: rgb(252, 252, 252);
+  background-color: white;
+  border-bottom: 1px solid #eee;
 }
 .navbar-bottom {
   margin-bottom: 10px;
@@ -256,9 +221,13 @@ export default {
   border-radius: 50px;
   font-size: 1rem;
 }
-.navbar-bottom,
-.navbar-bottom::before {
+.light-mode .navbar-bottom,
+.light-mode .navbar-bottom::before {
   background: linear-gradient(to right, #50c088 0%, #51c48a 80%, #4eb883 100%);
+}
+.dark-mode .navbar-bottom,
+.dark-mode .navbar-bottom::before {
+  background: linear-gradient(to right, #328059 0%, #30845a 80%, #369465 100%);
 }
 
 .navbar-bottom:before {
@@ -266,7 +235,7 @@ export default {
   display: inline-block;
   height: 40px;
   position: absolute;
-  top: -3px;
+  bottom: -3px;
   left: 10%;
   right: 10%;
   z-index: -1;

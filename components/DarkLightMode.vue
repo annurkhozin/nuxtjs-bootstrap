@@ -1,12 +1,12 @@
 <template>
   <div class="switches p-2 pr-3">
     <input
+      id="darktoggle"
       type="checkbox"
-      id="1"
       :checked="this.$store.state.darkMode"
       @click="setBgMode"
     />
-    <label for="1">
+    <label for="darktoggle">
       <span></span>
     </label>
   </div>
@@ -19,7 +19,6 @@ export default {
   methods: {
     ...mapMutations(['SET_BG_MODE']),
     setBgMode() {
-      localStorage.setItem('darkMode', !this.$store.state.darkMode)
       this.SET_BG_MODE(!this.$store.state.darkMode)
     },
   },

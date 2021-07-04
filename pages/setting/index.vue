@@ -18,25 +18,20 @@ export default {
     return {
       breadcrumb: [
         {
-          text: 'Beranda',
-          to: '/',
+          text: this.$t('Home'),
+          to: 'home',
         },
         {
-          text: 'Pengaturan',
+          text: this.$t('Setting'),
           active: true,
         },
       ],
     }
   },
-  head: {
-    title: 'Daftar Pengguna',
-    meta: [
-      {
-        hid: 'users',
-        name: 'users',
-        content: 'Halaman daftar pengguna',
-      },
-    ],
+  head() {
+    return {
+      title: this.$t('Setting'),
+    }
   },
 }
 </script>

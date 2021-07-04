@@ -1,8 +1,9 @@
 <template>
-  <aside class="mobile" :class="this.$store.state.showSidebar ? 'open' : ''">
-    <div class="d-flex bd-highlight">
-      <div class="p-2 bd-highlight"><DarkLightMode /></div>
-      <div class="ml-auto p-2 bd-highlight"><DarkLightMode /></div>
+  <aside :class="{ open: this.$store.state.showSidebar, mobile: isMobile }">
+    <div class="side-space"></div>
+    <div class="d-flex" style="height: 50px">
+      <div class="p-2"><LangToggle /></div>
+      <div class="ml-auto p-2"><DarkLightMode /></div>
     </div>
     <div class="side-menu-header d-flex align-items-center pl-3 pb-2">
       <span
@@ -30,7 +31,7 @@
       <b-input-group size="sm">
         <b-form-input
           v-model="searchMenu"
-          placeholder="Cari menu..."
+          :placeholder="$t('Search') + ' ...'"
           class="border-right-0"
         ></b-form-input>
         <span class="input-group-append">
@@ -40,21 +41,26 @@
         </span>
       </b-input-group>
     </div>
-    <div class="side-menu-body">
+    <div class="side-menu-body mb-5 pb-5">
       <div class="list-group">
         <nuxt-link
           v-for="menu in filterByMenu"
           :key="menu._id"
-          :to="menu.url"
+          :to="{
+            path: currentLang(menu.url),
+            query: { menu: menu._id },
+          }"
           :class="isCurrentPage(menu.url) ? 'active' : ''"
           class="list-group-item d-flex align-items-center"
         >
-          <b-icon
-            :icon="isCurrentPage(menu.url) ? menu.active_icon : menu.icon"
-            class="icon ml-2 mr-3"
-            scale="1.3"
-          ></b-icon>
-          <span class="str">{{ menu.module_name }}</span>
+          <div class="w-100" @click="sidebarMenu">
+            <b-icon
+              :icon="isCurrentPage(menu.url) ? menu.active_icon : menu.icon"
+              class="icon ml-2 mr-3"
+              scale="1.3"
+            ></b-icon>
+            <span class="str">{{ $t(menu.module_name) }}</span>
+          </div>
         </nuxt-link>
       </div>
     </div>
@@ -62,11 +68,19 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import DarkLightMode from '~/components/DarkLightMode'
+import LangToggle from '~/components/LangToggle'
 export default {
+  name: 'Sidebar',
+  components: {
+    DarkLightMode,
+    LangToggle,
+  },
   data() {
     return {
       searchMenu: '',
+      isMobile: false,
       currentPath: this.$route.name,
       nama_user_login: this.$auth.$state.user.nama,
       jabatan_user_login: this.$auth.$state.user.jabatan,
@@ -74,13 +88,10 @@ export default {
       menus: [],
     }
   },
-  components: {
-    DarkLightMode,
-  },
   computed: {
     filterByMenu() {
       return this.menus.filter((menu) => {
-        return menu.module_name
+        return this.$t(menu.module_name)
           .toLowerCase()
           .includes(this.searchMenu.toLowerCase())
       })
@@ -90,16 +101,41 @@ export default {
     this.currentPath = this.$route.name
     this.getMenus()
   },
+  mounted() {
+    this.$nextTick(function () {
+      this.onResize()
+    })
+    window.addEventListener('resize', this.onResize)
+  },
+
   methods: {
+    ...mapMutations(['SET_SIDEBAR']),
+    onResize() {
+      const widthSize = window.innerWidth
+      if (widthSize > 767) {
+        this.isMobile = false
+      } else {
+        this.isMobile = true
+      }
+    },
+    sidebarMenu() {
+      const widthSize = window.innerWidth
+      if (widthSize < 767) {
+        this.SET_SIDEBAR(false)
+      }
+    },
+    currentLang(url) {
+      return this.$i18n.defaultLocale === this.$i18n.locale
+        ? '/' + url
+        : '/' + this.$i18n.locale + '/' + url
+    },
     async getMenus() {
       const menus = await this.$axios.$get('/api/user-menu')
       this.menus = menus
     },
     isCurrentPage(page) {
-      if (
-        this.$route.name === page ||
-        (this.$route.name === 'index' && page === '/')
-      ) {
+      const path = this.$route.path.split('/')
+      if (path.includes(page)) {
         return true
       } else {
         return false
@@ -158,15 +194,6 @@ aside .side-menu-body::-webkit-scrollbar-thumb {
   background: rgba(136, 136, 136, 0.4);
 }
 
-/* .dark-mode aside .list-group {
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(136, 136, 136, 0.4);
-}
-.light-mode aside .list-group {
-  padding: 12px 0;
-  border-bottom: 1px solid #eeeeee;
-} */
-
 .light-mode aside .side-menu-header {
   height: 100px;
   border-bottom: 1px solid #eeeeee;
@@ -177,11 +204,9 @@ aside .side-menu-body::-webkit-scrollbar-thumb {
   bottom: 0;
   border-bottom: 1px solid rgba(136, 136, 136, 0.4);
 }
-aside .side-menu-body {
-  height: calc(100% - 100px);
-}
 
 aside .side-menu-body {
+  height: calc(100% - 200px);
   overflow-y: auto;
 }
 
@@ -200,7 +225,6 @@ aside .list-group {
 
 aside .list-group-item {
   height: 40px;
-  font-size: 14px;
   font-weight: 400;
   color: #111111;
   padding: 0 24px;
@@ -210,7 +234,6 @@ aside .list-group-item {
 
 aside .list-group-item {
   height: 40px;
-  font-size: 14px;
   font-weight: 400;
   padding: 0 24px;
   border: none;
@@ -243,8 +266,15 @@ aside .list-group-item.active .icon {
 aside.open {
   transform: translate3d(0, 0, 0);
 }
-
-aside.open:not(.mobile) + .content {
-  margin-left: 240px;
+.dark-mode aside.open {
+  border-right: 1px double #4a6885;
+}
+.light-mode aside.open {
+  border-right: 1px double #e2dfdf;
+}
+@media (min-width: 767px) {
+  .side-space {
+    height: 48px;
+  }
 }
 </style>

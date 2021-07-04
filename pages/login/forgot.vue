@@ -32,13 +32,13 @@
           <div
             class="box-login shadow justify-content-center align-items-center"
           >
-            <b-form method="post" @submit.prevent="sendAuth">
+            <b-form method="post" @submit.prevent="forgotPassword">
               <div class="text-center m-4">
                 <Logo class="logo mb-2" />
                 <p>
                   <strong> {{ $t('Hi_friend') }}</strong
                   ><br />
-                  {{ $t('Sub_hi_friend') }}.
+                  {{ $t('Sub_hi_forgot') }}.
                 </p>
               </div>
               <b-alert
@@ -60,41 +60,9 @@
                   required
                 ></b-form-input>
               </b-input-group>
-              <b-input-group class="mb-2" size="sm">
-                <b-input-group-append is-text>
-                  <b-icon-lock class="icon"></b-icon-lock>
-                </b-input-group-append>
-                <b-form-input
-                  ref="password"
-                  v-model="auth.password"
-                  :type="passwordFieldType"
-                  :placeholder="$t('Password')"
-                  style="border-left: 0"
-                  class="border-right-0"
-                  required
-                ></b-form-input>
-                <span class="input-group-append">
-                  <div
-                    class="input-group-text bg-transparent"
-                    type="button"
-                    @click="btnPassword"
-                  >
-                    <b-icon-eye-slash
-                      v-if="!showPassword"
-                      scale="0.9"
-                      class="icon"
-                    ></b-icon-eye-slash>
-                    <b-icon-eye
-                      v-if="showPassword"
-                      scale="0.9"
-                      class="icon"
-                    ></b-icon-eye>
-                  </div>
-                </span>
-              </b-input-group>
               <div class="text-right mb-4">
-                <nuxt-link :to="currentLang + 'login/forgot'" class="txt-forgot"
-                  >{{ $t('Forgot_password') }} ?</nuxt-link
+                <nuxt-link :to="currentLang + 'login'" class="txt-forgot"
+                  >{{ $t('Remember_password') }} ?</nuxt-link
                 >
               </div>
               <div class="text-center">
@@ -112,7 +80,7 @@
                     variant="success"
                     type="submit"
                   >
-                    {{ $t('Login') }}
+                    {{ $t('Send') }}
                   </b-button>
                 </b-overlay>
               </div>
@@ -157,12 +125,12 @@ export default {
   },
   head() {
     return {
-      title: this.$t('Login'),
+      title: this.$t('Forgot_password'),
       meta: [
         {
-          hid: 'login',
-          name: 'login',
-          content: 'Halaman login aplikasi',
+          hid: 'Forgot',
+          name: 'forgot',
+          content: 'Forgot password',
         },
       ],
     }
@@ -176,35 +144,20 @@ export default {
   },
 
   methods: {
-    btnPassword() {
-      if (this.showPassword === true) {
-        this.showPassword = false
-        this.passwordFieldType = 'password'
-      } else {
-        this.showPassword = true
-        this.passwordFieldType = 'text'
-      }
-    },
-    //JIKA TOMBOL LOGIN DITEKAN, MAKA METHOD INI AKAN DIJALANKAN
-    async sendAuth() {
+    async forgotPassword() {
       this.busy = true
       if (!this.auth.username) {
         this.$refs.username.$el.focus()
         this.error = 'Username / email wajid diisi'
-      } else if (!this.auth.password) {
-        this.$refs.password.$el.focus()
-        this.error = 'Password wajid diisi'
       } else {
         try {
-          //MELAKUKAN PROSES LOGIN, DENGAN MENGGUNAKAN STRATEGIES LOCAL YANG ADA DI NUXT CONFIG
-          //DAN MENGIRIMKAN DATA BERUPA EMAIL DAN PASSWORD
           await this.$auth
             .loginWith('local', {
               data: this.auth,
             })
             .then(() => {
               this.busy = false
-              this.$router.replace(this.currentLang + 'home')
+              this.$router.replace(this.currentLang + 'login')
             })
         } catch (e) {
           this.busy = false

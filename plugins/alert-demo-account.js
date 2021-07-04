@@ -1,13 +1,12 @@
 import Vue from 'vue'
 const demoAccount = {
-  alert() {
+  alert(AlertDemoTitle, AlertDemoContent) {
     Vue.$confirm({
-      title: '😥 Akses di batasi.',
-      message: `Sayang sekali, kamu tidak bisa melakukan aksi ini, karena akunmu hanya akun DEMO!`,
+      title: AlertDemoTitle,
+      message: AlertDemoContent,
       button: {
         yes: 'Oke',
       },
-      callback: (confirm) => {},
     })
   },
 }

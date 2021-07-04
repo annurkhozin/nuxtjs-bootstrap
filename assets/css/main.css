@@ -3,8 +3,8 @@
   ##Screen = 1281px to higher resolution desktops
 */
 @media (min-width: 1281px) {
-  /* CSS */
-  body {
+  body,
+  .dropdown-menu {
     font-size: 0.9rem;
   }
 }
@@ -14,8 +14,8 @@
     ##Screen = B/w 1025px to 1280px
   */
 @media (min-width: 1025px) and (max-width: 1280px) {
-  /* CSS */
-  body {
+  body,
+  .dropdown-menu {
     font-size: 0.9rem;
   }
 }
@@ -25,8 +25,8 @@
     ##Screen = B/w 768px to 1024px
   */
 @media (min-width: 768px) and (max-width: 1024px) {
-  /* CSS */
-  body {
+  body,
+  .dropdown-menu {
     font-size: 0.88rem;
   }
 }
@@ -36,8 +36,8 @@
     ##Screen = B/w 768px to 1024px
   */
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
-  /* CSS */
-  body {
+  body,
+  .dropdown-menu {
     font-size: 0.86em;
   }
 }
@@ -47,9 +47,9 @@
     ##Screen = B/w 481px to 767px
   */
 @media (min-width: 481px) and (max-width: 767px) {
-  /* CSS */
-  body {
-    font-size: 0.82em;
+  body,
+  .dropdown-menu {
+    font-size: 0.84em;
   }
 }
 
@@ -58,9 +58,9 @@
     ##Screen = B/w 320px to 479px
   */
 @media (max-width: 480px) {
-  /* CSS */
-  body {
-    font-size: 0.8em;
+  body,
+  .dropdown-menu {
+    font-size: 0.82em;
   }
 }
 
@@ -157,6 +157,9 @@ a:hover {
   white-space: inherit;
 }
 
+.dark-mode .dropdown-divider {
+  border-top: 1px solid #728fa8;
+}
 p.line {
   text-align: right;
   font-size: 11px;
@@ -210,11 +213,17 @@ p.line {
   border: none;
   background: #448bff linear-gradient(45deg, #448bff, #44e9ff);
 }
+.dark-mode .gd-primary {
+  background: #448bff linear-gradient(45deg, #346fce, #2ca9b9);
+}
 
 .gd-success {
   color: #fff;
   border: none;
   background: #31c971 linear-gradient(45deg, #31c971, #3dc931);
+}
+.dark-mode .gd-success {
+  background: #42a06a linear-gradient(45deg, #249453, #268a1d);
 }
 
 .gd-info {
@@ -222,9 +231,15 @@ p.line {
   border: none;
   background: #14bae4 linear-gradient(45deg, #14bae4, #14e4a6);
 }
+.dark-mode .gd-info {
+  background: #14bae4 linear-gradient(45deg, #14a3c7, #0da276);
+}
 
 .gd-warning {
   color: #fff;
   border: none;
   background: #f4c414 linear-gradient(45deg, #f4c414, #f45414);
+}
+.dark-mode .gd-warning {
+  background: #f4c414 linear-gradient(45deg, #a78610, #ad3506);
 }

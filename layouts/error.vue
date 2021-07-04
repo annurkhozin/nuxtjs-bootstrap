@@ -267,7 +267,7 @@
 
 <script>
 export default {
-  name: 'Profile',
+  name: '404 Not found',
   auth: false,
   layout: 'error',
   props: ['error'],

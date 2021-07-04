@@ -31,7 +31,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'Hello, Welcome back',
+    title: 'ERP System - Kalinesia Technology',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -79,19 +79,31 @@ export default {
     'nuxt-i18n',
   ],
   i18n: {
+    // seo: true,
     locales: [
       {
+        name: 'English',
         code: 'en',
+        iso: 'en-US',
         file: 'en-US.js',
+        flag: '/flag/en.png',
       },
       {
+        name: 'Indonesia',
         code: 'id',
+        iso: 'id-ID',
         file: 'id-ID.js',
+        flag: '/flag/id.png',
       },
     ],
+    detectBrowserLanguage: {
+      useCookie: true,
+      alwaysRedirect: true,
+      onlyOnRoot: true, // recommended
+    },
     lazy: true,
     langDir: 'lang/',
-    defaultLocale: 'en',
+    defaultLocale: 'id',
   },
   bootstrapVue: {
     icons: true,
@@ -99,18 +111,18 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // baseURL: 'http://192.168.43.193:3000/', // Used as fallback if no runtime config is provided
-    proxy: true, // Can be also an object with default options
-    credentials: false,
+    baseURL: 'http://192.168.43.193:3000/', // Used as fallback if no runtime config is provided
+    // proxy: true, // Can be also an object with default options
+    // credentials: false,
   },
-  proxy: {
-    '/api/': {
-      target: 'http://192.168.43.193:3000',
-      pathRewrite: { '^/api': '' },
-      changeOrigin: false,
-      prependPath: false,
-    },
-  },
+  // proxy: {
+  //   '/api/': {
+  //     target: 'http://192.168.43.193:3000',
+  //     pathRewrite: { '^/api': '' },
+  //     changeOrigin: false,
+  //     prependPath: false,
+  //   },
+  // },
 
   auth: {
     strategies: {

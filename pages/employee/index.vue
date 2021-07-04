@@ -3,7 +3,7 @@
     <Breadcrumb :items="breadcrumb" />
     <div v-if="roles.includes('create')">
       <div class="d-none d-md-block d-md-block">
-        <b-button class="mb-3 shadow gd-success" size="sm">{{
+        <b-button class="mb-3" variant="success shadow" size="sm">{{
           $t('New')
         }}</b-button>
       </div>
@@ -22,59 +22,33 @@
     <div v-if="roles.includes('read')">
       <b-row>
         <b-col align-self="start">
-          <label class="mr-sm-1 str" for="inline-form-custom-select-pref"
+          <label class="mr-sm-2 str" for="inline-form-custom-select-pref"
             >{{ $t('Show') }}&nbsp;
           </label>
           <b-form-select
             id="inline-form-custom-select-pref"
             v-model="limitData"
             size="sm"
-            class="str"
+            class="mr-sm-2 mb-sm-0 col-5 col-sm-6 col-md-3"
             :options="[50, 100, 500]"
             :value="50"
-            @change="getUsers"
+            @change="getEmployees"
           ></b-form-select>
-          <b-dropdown
-            text="Filter"
-            size="sm"
-            :variant="
-              this.$store.state.darkMode ? 'secondary' : 'outline-secondary'
-            "
-            class="col-2 pl-0 pr-0 str"
-            v-show="!isSearch"
-          >
-            <b-form-checkbox
-              v-model="filter.isActiveUser"
-              size="sm"
-              class="ml-2 mr-2 str"
-              >{{ $t('Active_user') }}</b-form-checkbox
-            >
-            <b-form-checkbox
-              v-model="filter.isActiveGroup"
-              size="sm"
-              class="ml-2 mr-2 str"
-              >{{ $t('Active_group') }}</b-form-checkbox
-            >
-            <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item @click="getUsers" style="font-size: 1rem"
-              ><b-icon-check></b-icon-check> {{ $t('Done') }}</b-dropdown-item
-            >
-          </b-dropdown>
         </b-col>
         <b-col class="d-flex justify-content-end">
-          <b-input-group size="sm" class="col-12 col-md-6 pl-0 pr-0">
+          <b-input-group size="sm" class="col-12 col-md-8">
             <b-form-input
-              v-model="filter.searchData"
+              v-model="searchData"
               :placeholder="$t('Search') + '...'"
-              @input="getUsers"
+              @input="getEmployees"
             ></b-form-input>
             <span class="input-group-append">
               <div
                 class="input-group-text bg-transparent"
                 type="button"
-                @click="getUsers"
+                @click="getEmployees"
               >
-                <b-icon-search class="icon" scale="0.8"></b-icon-search>
+                <b-icon-search class="icon"></b-icon-search>
               </div>
             </span>
           </b-input-group>
@@ -97,14 +71,14 @@
               size="sm"
               :disabled="busy"
               variant="outline-success"
-              @click="getUsers"
+              @click="getEmployees"
             >
               {{ $t('reload') }}
             </b-button>
           </b-overlay>
         </b-col>
         <b-col
-          v-for="(user, index) in users"
+          v-for="(user, index) in employees"
           :key="index"
           cols="12"
           sm="6"
@@ -133,7 +107,7 @@
                 >{{ user.nama }}</a
               >
               <div class="item-except text-sm h-1x str">
-                {{ user.group }}
+                {{ user.jabatan }}
               </div>
             </div>
             <b-col
@@ -143,10 +117,8 @@
             >
               <b-button
                 v-if="roles.includes('delete')"
+                variant="outline-danger"
                 size="sm"
-                :variant="
-                  $store.state.darkMode ? 'secondary' : 'outline-secondary'
-                "
                 class="btn-action"
                 @click="
                   userAction(user._id, '(' + user.code + ') ' + user.nama)
@@ -156,13 +128,11 @@
               </b-button>
               <b-button
                 v-if="roles.includes('update')"
+                variant="outline-success"
                 size="sm"
-                :variant="
-                  $store.state.darkMode ? 'secondary' : 'outline-secondary'
-                "
                 class="btn-action"
               >
-                <b-icon-person-badge></b-icon-person-badge>
+                <b-icon-pencil-square></b-icon-pencil-square>
               </b-button>
               <span class="d-inline d-sm-none d-md-none d-lg-none d-xl-none">
                 <b-icon-three-dots-vertical
@@ -212,7 +182,7 @@
 import demoAccount from '~/plugins/alert-demo-account'
 import Breadcrumb from '~/components/Breadcrumb'
 export default {
-  name: 'User',
+  name: 'Employee',
   auth: true,
   components: {
     Breadcrumb,
@@ -222,19 +192,14 @@ export default {
     return {
       id_user_login: this.$auth.$state.user._id,
       roles: this.$store.state.roles,
-      users: [],
+      employees: [],
       recordsTotal: 0,
       recordShow: 0,
       limitData: 50,
       pagination: 1,
+      searchData: '',
       busy: false,
       showLoadMore: false,
-      isSearch: false,
-      filter: {
-        searchData: '',
-        isActiveUser: true,
-        isActiveGroup: true,
-      },
       colorAvatar: ['gd-primary', 'gd-success', 'gd-info', 'gd-warning'],
       breadcrumb: [
         {
@@ -242,7 +207,7 @@ export default {
           to: 'home',
         },
         {
-          text: this.$t('User'),
+          text: this.$t('Employee'),
           active: true,
         },
       ],
@@ -250,14 +215,15 @@ export default {
   },
   head() {
     return {
-      title: this.$t('User'),
+      title: this.$t('Employee'),
     }
   },
 
   computed: {},
   created() {
-    this.getUsers()
+    this.getEmployees()
   },
+
   methods: {
     async userAction(id, fullname) {
       if (this.$auth.$state.user.demo_account) {
@@ -281,40 +247,40 @@ export default {
         })
       }
     },
-    async getUsers() {
+    async getEmployees() {
       this.busy = true
       this.pagination = 1
-      const users = await this.$axios.$get('/api/users', {
-        params: {
-          pagination: this.pagination,
-          limit: this.limitData,
-          filter: this.filter,
-        },
-      })
-      this.recordsTotal = users.recordsTotal
-      this.users = users.data
-      this.recordShow = this.users.length
-      this.hideLoadMore()
-      this.busy = false
-    },
-    async loadMore() {
-      this.busy = true
-      const users = await this.$axios.$get('/api/users', {
+      const employees = await this.$axios.$get('/api/employees', {
         params: {
           pagination: this.pagination,
           limit: this.limitData,
           search: this.searchData,
         },
       })
-      this.recordsTotal = users.recordsTotal
-      this.users = [...this.users, ...users.data]
-      this.recordShow = this.users.length
+      this.recordsTotal = employees.recordsTotal
+      this.employees = employees.data
+      this.recordShow = this.employees.length
+      this.hideLoadMore()
+      this.busy = false
+    },
+    async loadMore() {
+      this.busy = true
+      const employees = await this.$axios.$get('/api/employees', {
+        params: {
+          pagination: this.pagination,
+          limit: this.limitData,
+          search: this.searchData,
+        },
+      })
+      this.recordsTotal = employees.recordsTotal
+      this.employees = [...this.employees, ...employees.data]
+      this.recordShow = this.employees.length
       this.hideLoadMore()
       this.pagination = this.pagination + 1
       this.busy = false
     },
     hideLoadMore() {
-      if (this.lengthData > this.users.length) {
+      if (this.lengthData > this.employees.length) {
         this.showLoadMore = true
       } else {
         this.showLoadMore = false
@@ -390,16 +356,6 @@ export default {
   width: 48px !important;
   height: 48px !important;
 }
-.custom-select {
-  background: transparent;
-  padding: 0.375rem;
-  text-align: center;
-  width: 50px;
-}
-
-.dark-mode .btn-filter {
-  border: #eee;
-}
 
 @media (max-width: 575px) {
   .dark-mode .list-item {
@@ -407,9 +363,6 @@ export default {
   }
   .light-mode .list-item {
     border-bottom: 1px solid #eeeeee;
-  }
-  .custom-select {
-    width: 40px;
   }
 }
 </style>

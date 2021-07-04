@@ -9,11 +9,13 @@
 
     <div :class="this.$store.state.darkMode ? 'dark-mode' : 'light-mode'">
       <Navbar v-if="this.$auth.$state.loggedIn" />
-      <div class="pt-md-5 pt-2 pb-5">
+      <div class="d-flex pt-2">
         <Sidebar v-if="this.$auth.$state.loggedIn" />
-        <b-container class="content">
-          <Nuxt />
-        </b-container>
+        <main class="content w-100">
+          <div class="container">
+            <Nuxt />
+          </div>
+        </main>
         <div class="side-menu-backdrop" @click="sidebarMenu"></div>
       </div>
       <vue-confirm-dialog />
@@ -26,9 +28,18 @@ import { mapMutations } from 'vuex'
 import Navbar from '~/components/Navbar'
 import Sidebar from '~/components/Sidebar'
 export default {
+  name: 'Default',
   components: {
     Navbar,
     Sidebar,
+  },
+
+  head() {
+    return {
+      htmlAttrs: {
+        lang: this.$i18n.locale,
+      },
+    }
   },
 
   methods: {
@@ -50,7 +61,7 @@ aside {
   width: 240px;
   margin: 0 auto;
   overflow: none;
-  transition: 0.5s;
+  transition: 0.3s ease-in-out;
   transform: translate3d(-240px, 0, 0);
   transition-duration: 0;
   border-right-color: rgb(177 177 177 / 30%);
